@@ -1,0 +1,15 @@
+# Build 
+build/
+*.obj
+*.exe
+*.dll
+*.pdb
+*.ilk
+
+# IDE
+.vs/
+.vscode/
+
+# Compile files
+build.bat
+

@@ -1,5 +1,5 @@
+// header
 #include "injector_engine.h"
-
 #include "injector_utils.h"
 
 #include <tlhelp32.h>
@@ -33,7 +33,7 @@ DWORD FindProcessByName(const std::wstring& processName) {
     return 0;
 }
 
-} // namespace
+}
 
 bool ResolveTargetProcess(const std::wstring& rawTarget, DWORD& processId, const Logger& logger) {
     if (utils::TryParseProcessId(rawTarget, processId)) {
@@ -126,9 +126,7 @@ InjectionResult InjectDLL(DWORD processId, const std::wstring& dllPath, const Lo
         logger(ss.str());
     }
 
-    HANDLE process = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION |
-                                     PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_VM_READ,
-                                 FALSE, processId);
+    HANDLE process = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, processId);
 
     if (!process) {
         if (logger) {
@@ -199,9 +197,7 @@ InjectionResult InjectDLL(DWORD processId, const std::wstring& dllPath, const Lo
         logger(L"Creating remote thread...");
     }
 
-    HANDLE remoteThread = CreateRemoteThread(process, nullptr, 0,
-                                             reinterpret_cast<LPTHREAD_START_ROUTINE>(loadLibrary),
-                                             remoteMemory, 0, nullptr);
+    HANDLE remoteThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(loadLibrary), remoteMemory, 0, nullptr);
 
     if (!remoteThread) {
         if (logger) {
@@ -258,8 +254,7 @@ bool EjectDLL(DWORD processId, HMODULE moduleHandle, const Logger& logger) {
         logger(ss.str());
     }
 
-    HANDLE process = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION,
-                                 FALSE, processId);
+    HANDLE process = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION, FALSE, processId);
     if (!process) {
         if (logger) {
             std::wstringstream ss;
@@ -289,9 +284,7 @@ bool EjectDLL(DWORD processId, HMODULE moduleHandle, const Logger& logger) {
         logger(L"Creating remote thread for unload...");
     }
 
-    HANDLE remoteThread = CreateRemoteThread(process, nullptr, 0,
-                                             reinterpret_cast<LPTHREAD_START_ROUTINE>(freeLibrary),
-                                             moduleHandle, 0, nullptr);
+    HANDLE remoteThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(freeLibrary), moduleHandle, 0, nullptr);
     if (!remoteThread) {
         if (logger) {
             std::wstringstream ss;
@@ -327,4 +320,4 @@ bool EjectDLL(DWORD processId, HMODULE moduleHandle, const Logger& logger) {
     return true;
 }
 
-} // namespace injector
+}

@@ -1,13 +1,9 @@
-/*
- * Universal DLL Injector - Interface Graphique
- * Injecte une DLL dans un processus via une interface Win32 simple.
- */
-
 #include <windows.h>
 #include <commdlg.h>
 #include <string>
 #include <sstream>
 
+// header
 #include "injector_engine.h"
 #include "injector_utils.h"
 
@@ -73,9 +69,7 @@ namespace
         PSID adminGroup = nullptr;
         SID_IDENTIFIER_AUTHORITY ntAuthority = SECURITY_NT_AUTHORITY;
 
-        if (AllocateAndInitializeSid(&ntAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
-                                     DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-                                     &adminGroup)) {
+        if (AllocateAndInitializeSid(&ntAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &adminGroup)) {
             if (!CheckTokenMembership(nullptr, adminGroup, &isAdmin)) {
                 isAdmin = FALSE;
             }
@@ -117,46 +111,21 @@ namespace
         HFONT font = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
         state->font = font;
 
-    HWND labelTarget = CreateWindowExW(0, L"STATIC", L"Target (name or PID)",
-                       WS_CHILD | WS_VISIBLE,
-                       20, 20, 200, 20,
-                       window, nullptr, instance, nullptr);
+    HWND labelTarget = CreateWindowExW(0, L"STATIC", L"Target (name or PID)", WS_CHILD | WS_VISIBLE, 20, 20, 200, 20, window, nullptr, instance, nullptr);
 
-        state->targetEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
-                                            WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL,
-                                            20, 42, 360, 24,
-                                            window, reinterpret_cast<HMENU>(kTargetEditId), instance, nullptr);
+        state->targetEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL, 20, 42, 360, 24, window, reinterpret_cast<HMENU>(kTargetEditId), instance, nullptr);
 
-    HWND labelDll = CreateWindowExW(0, L"STATIC", L"DLL to inject",
-                    WS_CHILD | WS_VISIBLE,
-                    20, 80, 200, 20,
-                    window, nullptr, instance, nullptr);
+    HWND labelDll = CreateWindowExW(0, L"STATIC", L"DLL to inject", WS_CHILD | WS_VISIBLE, 20, 80, 200, 20, window, nullptr, instance, nullptr);
 
-        state->dllEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
-                                         WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL,
-                                         20, 102, 360, 24,
-                                         window, reinterpret_cast<HMENU>(kDllEditId), instance, nullptr);
+        state->dllEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL, 20, 102, 360, 24, window, reinterpret_cast<HMENU>(kDllEditId), instance, nullptr);
 
-    HWND browseButton = CreateWindowExW(0, L"BUTTON", L"Browse...",
-                        WS_CHILD | WS_VISIBLE | WS_TABSTOP,
-                        390, 100, 110, 28,
-                        window, reinterpret_cast<HMENU>(kBrowseButtonId), instance, nullptr);
+    HWND browseButton = CreateWindowExW(0, L"BUTTON", L"Browse...", WS_CHILD | WS_VISIBLE | WS_TABSTOP, 390, 100, 110, 28, window, reinterpret_cast<HMENU>(kBrowseButtonId), instance, nullptr);
 
-    HWND injectButton = CreateWindowExW(0, L"BUTTON", L"Inject",
-                        WS_CHILD | WS_VISIBLE | WS_TABSTOP,
-                        390, 40, 110, 28,
-                        window, reinterpret_cast<HMENU>(kInjectButtonId), instance, nullptr);
+    HWND injectButton = CreateWindowExW(0, L"BUTTON", L"Inject", WS_CHILD | WS_VISIBLE | WS_TABSTOP, 390, 40, 110, 28, window, reinterpret_cast<HMENU>(kInjectButtonId), instance, nullptr);
 
-    state->unloadButton = CreateWindowExW(0, L"BUTTON", L"Unload",
-                          WS_CHILD | WS_VISIBLE | WS_TABSTOP,
-                          390, 70, 110, 28,
-                          window, reinterpret_cast<HMENU>(kUnloadButtonId), instance, nullptr);
+    state->unloadButton = CreateWindowExW(0, L"BUTTON", L"Unload", WS_CHILD | WS_VISIBLE | WS_TABSTOP, 390, 70, 110, 28, window, reinterpret_cast<HMENU>(kUnloadButtonId), instance, nullptr);
 
-        state->logEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
-                                         WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL |
-                                             ES_READONLY | WS_VSCROLL,
-                                         20, 150, 480, 180,
-                                         window, reinterpret_cast<HMENU>(kLogEditId), instance, nullptr);
+        state->logEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL, 20, 150, 480, 180, window, reinterpret_cast<HMENU>(kLogEditId), instance, nullptr);
 
         SendMessageW(labelTarget, WM_SETFONT, reinterpret_cast<WPARAM>(font), TRUE);
         SendMessageW(labelDll, WM_SETFONT, reinterpret_cast<WPARAM>(font), TRUE);
@@ -219,7 +188,7 @@ namespace
             return;
         }
 
-        AppendLog(state->logEdit, L"----------------------------------------");
+        AppendLog(state->logEdit, L"---");
         AppendLog(state->logEdit, L"Target: " + rawTarget);
         AppendLog(state->logEdit, L"DLL: " + dllPath);
 
@@ -265,7 +234,7 @@ namespace
             return;
         }
 
-        AppendLog(state->logEdit, L"----------------------------------------");
+        AppendLog(state->logEdit, L"---");
         AppendLog(state->logEdit, L"Requested unload for: " + dllPath);
 
         const injector::Logger logFn = [state](const std::wstring& entry) {
@@ -360,10 +329,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCommand) {
         return 0;
     }
 
-    HWND window = CreateWindowExW(0, className, L"Universal DLL Injector",
-                                  WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-                                  CW_USEDEFAULT, CW_USEDEFAULT, 540, 380,
-                                  nullptr, nullptr, instance, nullptr);
+    HWND window = CreateWindowExW(0, className, L"Universal DLL Injector", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, 540, 380, nullptr, nullptr, instance, nullptr);
 
     if (!window) {
         MessageBoxW(nullptr, L"Failed to create the main window.", L"Error", MB_ICONERROR);

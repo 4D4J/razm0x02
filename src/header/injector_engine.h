@@ -18,4 +18,4 @@ HMODULE FindModuleHandle(DWORD processId, const std::wstring& moduleReference, c
 InjectionResult InjectDLL(DWORD processId, const std::wstring& dllPath, const Logger& logger);
 bool EjectDLL(DWORD processId, HMODULE moduleHandle, const Logger& logger);
 
-} // namespace injector
+}

@@ -1,21 +1,9 @@
-#pragma once
+﻿#pragma once
 
-#include <functional>
-#include <string>
-#include <windows.h>
+#include "process_finder.h"
+#include "dll_injector.h"
+#include "dll_ejector.h"
 
 namespace injector {
 
-using Logger = std::function<void(const std::wstring&)>;
-
-struct InjectionResult {
-    bool success = false;
-    HMODULE moduleHandle = nullptr;
-};
-
-bool ResolveTargetProcess(const std::wstring& rawTarget, DWORD& processId, const Logger& logger);
-HMODULE FindModuleHandle(DWORD processId, const std::wstring& moduleReference, const Logger& logger);
-InjectionResult InjectDLL(DWORD processId, const std::wstring& dllPath, const Logger& logger);
-bool EjectDLL(DWORD processId, HMODULE moduleHandle, const Logger& logger);
-
-}
+} 
